@@ -63,3 +63,12 @@ def print_stat(folder, classifier, setting):
             print('%.2f'%(100*float(spam)/float(total))+'% spam emails')
             print('%.2f'%((100*float(ham)/float(total))+'% ham emails'))
 
+def explore_feats(dataset):
+    stoplist = stopwords.words('english')
+    lemmatizer = WordNetLemmatizer()
+    words = []
+    for email in dataset:
+        words += [lemmatizer.lemmatize(word.lower()) for word in
+        word_tokenize(unicode(email, errors='ignore')) if not word.lower() in stoplist]
+    fdist = nltk.FreqDist(words)
+    fdist.plot(75, cumulative=True)
