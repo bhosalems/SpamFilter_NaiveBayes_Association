@@ -23,10 +23,16 @@ if __name__ == "__main__":
     train_set, test_set, classifier = sf.train(all_features, 1.0)
 
     #classify your new email only partoicular message
-    run_online(classifier, "")
+    #run_online(classifier, "")
 
     #classifying whole new my emails mail. Save new emails into this folder
     detect_spam("my_emails/", classifier,"")
+
+    #printing statistics
+    print('\nHAM:')
+    print_stat('enron2/ham/', classifier, "")
+    print('SPAM:')
+    print_stat('enron2/spam/', classifier, "")
 #For detecting spam in whole mail
 def detect_spam(folder, classifier, setting):
         output = {}
