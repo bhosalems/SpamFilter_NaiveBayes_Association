@@ -12,21 +12,39 @@ def run_online(classifier, setting):
     print (classifier.classify(features))
 #Only for validating some message in text
 if __name__ == "__main__":
-    soam =sf.init_lists('enrn1/sapam/')
+    spam = sf.init_lists('enron1/spam/')
     ham = sf.init_lists('enron1/ham/')
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
+
+    spam2 = sf.init_lists('enron2/spam/')
+    ham2 = sf.init_lists('enron2/ham/')
+    all_emails += [(email, 'spam') for email in spam2]
+    all_emails += [(email, 'ham') for email in ham2]
+
     random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')
 
     all_features = [(sf.get_features(email, ''), label) for (email, label) in all_emails]
-    train_set, test_set, classifier = sf.train(all_features, 1.0)
+    train_set, test_set, classifier = sf.train(all_features, 0.8)
 
-    #classify your new email only partoicular message
+    sf.evaluate(train_set, test_set, classifier) 
+
+    #spam =sf.init_lists('enrn1/sapam/')
+    #ham = sf.init_lists('enron1/ham/')
+    #all_emails = [(email, 'spam') for email in spam]
+    #all_emails += [(email, 'ham') for email in ham]
+    #random.shuffle(all_emails)
+    #print ('Corpus size = ' + str(len(all_emails)) + ' emails')
+
+    #all_features = [(sf.get_features(email, ''), label) for (email, label) in all_emails]
+    #train_set, test_set, classifier = sf.train(all_features, 1.0)#
+
+    #classify your new email only particular message
     #run_online(classifier, "")
 
     #classifying whole new my emails mail. Save new emails into this folder
-    detect_spam("my_emails/", classifier,"")
+    #detect_spam("my_emails/", classifier,"")
 
     #printing statistics
     print('\nHAM:')
