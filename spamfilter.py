@@ -1,92 +1,65 @@
-import os, random
+from __future__ import print_function, division
 import nltk
-from nltk import word_tokenize, WordNetLemmatizer from nltk.corpus
-import stopwords
-import spam_filter as sf
+import os
+import random
+from collections import Counter
+from nltk import word_tokenize, WordNetLemmatizer
+from nltk.corpus import stopwords
+from nltk import NaiveBayesClassifier, classify
 
-def run_online(classifier, setting):
-    while True:
-    features = sf.get_features(raw_input('Your new email: '), setting)
-    if (len(features) == 0):
-        break
-    print (classifier.classify(features))
-#Only for validating some message in text
-#For detecting spam in whole mail
-def detect_spam(folder, classifier, setting):
-        output = {}
-        file_list = os.listdir(folder)
-        for a_file in file_list:
-            f = open(folder + a_file, 'r')
-            features = sf.get_features(f.read(), setting)
-            f.close()
-            output[a_file] = classifier.classify(features)
-            for item in output.keys():
-                print(item + '\t' + output.get(item))
+stoplist = stopwords.words('english')
 
-#lets print some stst of classification
-def print_stat(folder, classifier, setting):
-        total = 0
-        spam = 0
-        ham = 0
-        file_list = os.listdir(folder)
-        for a_file in file_list:
-            total+=1
-            f = open(folder + a_file, 'r')
-            features = sf.get_features(f.resd(), setting)
-            f.close()
-            if classifier.classify(features)=='spam':
-                spam+=1
-            else:
-                ham+=1
-            print('%.2f'%(100*float(spam)/float(total))+'% spam emails')
-            print('%.2f'%((100*float(ham)/float(total))+'% ham emails'))
+def init_lists(folder):
+    a_list = []
+    file_list = os.listdir(folder)
+    for a_file in file_list:
+        f = open(folder + a_file, 'r')
+        a_list.append(f.read())
+    f.close()
+    return a_list
 
-def explore_feats(dataset):
-    stoplist = stopwords.words('english')
+def preprocess(sentence):
     lemmatizer = WordNetLemmatizer()
-    words = []
-    for email in dataset:
-        words += [lemmatizer.lemmatize(word.lower()) for word in
-        word_tokenize(unicode(email, errors='ignore')) if not word.lower() in stoplist]
-    fdist = nltk.FreqDist(words)
-    fdist.plot(75, cumulative=True)
-if __name__ == "__main__":
-    spam = sf.init_lists('enron1/spam/')
-    ham = sf.init_lists('enron1/ham/')
+    return [lemmatizer.lemmatize(word.lower()) for word in word_tokenize(unicode(sentence, errors='ignore'))]
+
+def get_features(text, setting):
+    if setting=='bow':
+        return {word: count for word, count in Counter(preprocess(text)).items() if not word in stoplist}
+    else:
+        return {word: True for word in preprocess(text) if not word in stoplist}
+
+def train(features, samples_proportion):
+    train_size = int(len(features) * samples_proportion)
+    # initialise the training and test sets
+    train_set, test_set = features[:train_size], features[train_size:]
+    print ('Training set size = ' + str(len(train_set)) + ' emails')
+    print ('Test set size = ' + str(len(test_set)) + ' emails')
+    # train the classifier
+    classifier = NaiveBayesClassifier.train(train_set)
+    return train_set, test_set, classifier
+
+def evaluate(train_set, test_set, classifier):
+    # check how the classifier performs on the training and test sets
+    print ('Accuracy on the training set = ' + str(classify.accuracy(classifier, train_set)))
+    print ('Accuracy of the test set = ' + str(classify.accuracy(classifier, test_set)))
+    # check which words are most informative for the classifier
+    classifier.show_most_informative_features(20)
+
+if __name__ == "__main__" :
+    # initialise the data
+    spam = init_lists('enron1/spam/')
+    ham = init_lists('enron1/ham/')
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
-
-    spam2 = sf.init_lists('enron2/spam/')
-    ham2 = sf.init_lists('enron2/ham/')
-    all_emails += [(email, 'spam') for email in spam2]
-    all_emails += [(email, 'ham') for email in ham2]
-
     random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')
 
-    all_features = [(sf.get_features(email, ''), label) for (email, label) in all_emails]
-    train_set, test_set, classifier = sf.train(all_features, 0.8)
+    # extract the features
+    all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
+    print ('Collected ' + str(len(all_features)) + ' feature sets')
 
-    sf.evaluate(train_set, test_set, classifier) 
+    # train the classifier
+    train_set, test_set, classifier = train(all_features, 0.8)
 
-    #spam =sf.init_lists('enrn1/sapam/')
-    #ham = sf.init_lists('enron1/ham/')
-    #all_emails = [(email, 'spam') for email in spam]
-    #all_emails += [(email, 'ham') for email in ham]
-    #random.shuffle(all_emails)
-    #print ('Corpus size = ' + str(len(all_emails)) + ' emails')
-
-    #all_features = [(sf.get_features(email, ''), label) for (email, label) in all_emails]
-    #train_set, test_set, classifier = sf.train(all_features, 1.0)#
-
-    #classify your new email only particular message
-    #run_online(classifier, "")
-
-    #classifying whole new my emails mail. Save new emails into this folder
-    #detect_spam("my_emails/", classifier,"")
-
-    #printing statistics
-    print('\nHAM:')
-    print_stat('enron2/ham/', classifier, "")
-    print('SPAM:')
-    print_stat('enron2/spam/', classifier, "")
+    # evaluate its performance
+    evaluate(train_set, test_set, classifier)
