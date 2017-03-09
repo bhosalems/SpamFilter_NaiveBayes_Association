@@ -82,7 +82,7 @@ if __name__ == "__main__" :
     #get the spam frequent itemset and ham frequent itemset
 
     #define Support value in %
-    support = 10
+    support = 10 
     spam_support_count = (spam_size * 10)/ 100;
     ham_support_count = (ham_size * 10)/ 100;
     #spam_frequent, ham_frequent = 
