@@ -26,7 +26,7 @@ def get_features(text, setting):
     if setting=='bow':
         return {word: count for word, count in Counter(preprocess(text)).items() if not word in stoplist}
     else:
-        return {word: True for word in preprocess(text) if not word in stoplist}
+        return {word for word in preprocess(text) if not word in stoplist}
 
 def train(features, samples_proportion):
     train_size = int(len(features) * samples_proportion)
@@ -37,6 +37,25 @@ def train(features, samples_proportion):
     # train the classifier
     classifier = NaiveBayesClassifier.train(train_set)
     return train_set, test_set, classifier
+
+def get_frequent(all_features):
+    i=0
+    for (words, label) in all_features:
+        #Collecting unique words from email to set
+        words_in_mail = words
+        wordsset_in_email=set()
+        for word in words_in_mail:
+            wordsset_in_email.add(word)
+        label_of_email = label
+        spam_word_count = {}
+        ham_word_count = {}
+        if label_of_email == 'spam':
+            for word in wordsset_in_email:
+                spam_word_count[word] = spam_word_count.setdefault(word,0)+1
+        else:
+            for word in wordsset_in_email:
+                ham_word_count[word] = ham_word_count.setdefault(word,0)+1
+
 
 def evaluate(train_set, test_set, classifier):
     # check how the classifier performs on the training and test sets
@@ -58,10 +77,9 @@ if __name__ == "__main__" :
     all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     print ('Collected ' + str(len(all_features)) + ' feature sets')
 
-    if isinstance(all_features, basestring):
-        print(yes)
-    for feature in all_features:
-        print(feature) 
+    #get the spam frequent itemset and ham frequent itemset
+    #spam_frequent, ham_frequent = 
+    get_frequent(all_features)
     # train the classifier
     #train_set, test_set, classifier = train(all_features, 0.8)
     # evaluate its performance
