@@ -38,8 +38,7 @@ def train(features, samples_proportion):
     classifier = NaiveBayesClassifier.train(train_set)
     return train_set, test_set, classifier
 
-def get_frequent(all_features):
-    i=0
+def get_frequent(all_features, spam_support_count, ham_support_count):
     for (words, label) in all_features:
         #Collecting unique words from email to set
         words_in_mail = words
@@ -49,6 +48,7 @@ def get_frequent(all_features):
         label_of_email = label
         spam_word_count = {}
         ham_word_count = {}
+        #Collecting count of each word in Spam and Ham dictionary
         if label_of_email == 'spam':
             for word in wordsset_in_email:
                 spam_word_count[word] = spam_word_count.setdefault(word,0)+1
@@ -68,6 +68,8 @@ if __name__ == "__main__" :
     # initialise the data
     spam = init_lists('enron1/spam/')
     ham = init_lists('enron1/ham/')
+    spam_size = len(spam) 
+    ham_size = len(ham)
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
     random.shuffle(all_emails)
@@ -78,8 +80,13 @@ if __name__ == "__main__" :
     print ('Collected ' + str(len(all_features)) + ' feature sets')
 
     #get the spam frequent itemset and ham frequent itemset
+
+    #define Support value in %
+    support = 10
+    spam_support_count = (spam_size * 10)/ 100;
+    ham_support_count = (ham_size * 10)/ 100;
     #spam_frequent, ham_frequent = 
-    get_frequent(all_features)
+    get_frequent(all_features, spam_support_count, ham_support_count)
     # train the classifier
     #train_set, test_set, classifier = train(all_features, 0.8)
     # evaluate its performance
