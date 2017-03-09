@@ -39,6 +39,8 @@ def train(features, samples_proportion):
     return train_set, test_set, classifier
 
 def get_frequent(all_features, spam_support_count, ham_support_count):
+    spam_word_count = {}
+    ham_word_count = {}
     for (words, label) in all_features:
         #Collecting unique words from email to set
         words_in_mail = words
@@ -46,8 +48,6 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
         for word in words_in_mail:
             wordsset_in_email.add(word)
         label_of_email = label
-        spam_word_count = {}
-        ham_word_count = {}
         #Collecting count of each word in Spam and Ham dictionary
         if label_of_email == 'spam':
             for word in wordsset_in_email:
@@ -55,7 +55,10 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
         else:
             for word in wordsset_in_email:
                 ham_word_count[word] = ham_word_count.setdefault(word,0)+1
-
+    #Taking words having count greater than support counts
+    spam_frequent = {word:count for (word,count) in spam_word_count.items() if count > spam_support_count}             
+    ham_frequent = {word:count for (word,count) in ham_word_count.items() if count > ham_support_count}
+    return spam_frequent, ham_frequent
 
 def evaluate(train_set, test_set, classifier):
     # check how the classifier performs on the training and test sets
@@ -79,14 +82,19 @@ if __name__ == "__main__" :
     all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     print ('Collected ' + str(len(all_features)) + ' feature sets')
 
-    #get the spam frequent itemset and ham frequent itemset
-
     #define Support value in %
     support = 10 
     spam_support_count = (spam_size * 10)/ 100;
     ham_support_count = (ham_size * 10)/ 100;
-    #spam_frequent, ham_frequent = 
-    get_frequent(all_features, spam_support_count, ham_support_count)
+    print('Spam support count:'+str(spam_support_count))
+    print('Ham support count:'+str(ham_support_count))
+
+    #get the spam frequent itemset and ham frequent itemset
+    spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
+    print(spam_frequent)
+    print("\n")
+    print(ham_frequent)
+
     # train the classifier
     #train_set, test_set, classifier = train(all_features, 0.8)
     # evaluate its performance
