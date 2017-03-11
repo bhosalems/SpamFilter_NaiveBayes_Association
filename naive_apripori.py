@@ -95,6 +95,7 @@ if __name__ == "__main__" :
     print("\n")
     print(ham_frequent)
 
+
     # train the classifier
     #train_set, test_set, classifier = train(all_features, 0.8)
     # evaluate its performance
