@@ -6,7 +6,8 @@ from collections import Counter
 from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk import NaiveBayesClassifier, classify
-
+import own_naivebayes as owncl
+#import own_naivebayes.classifier as owncl
 stoplist = stopwords.words('english')
 
 def init_lists(folder):
@@ -91,12 +92,15 @@ if __name__ == "__main__" :
 
     #get the spam frequent itemset and ham frequent itemset
     spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
-    print(spam_frequent)
-    print("\n")
-    print(ham_frequent)
+    #print(spam_frequent)
+    #print("\n")
+    #print(ham_frequent)
 
 
-    # train the classifier
-    #train_set, test_set, classifier = train(all_features, 0.8)
+    # train the our own naivebayes classifier and collect map of raw probabilities of words
+    #train_set, test_set, raw_probabilities, classifier = train(all_features, 0.8)
+    owncl.train(all_features, 0.8)
+
+
     # evaluate its performance
     #evaluate(train_set, test_set, classifier)
