@@ -8,9 +8,11 @@ def train(features, samples_proportion):
     spam_count = 0.000000
     ham_count = 0.000000
     
-    #Initialize spam words count and ham words count
+    #Initialize spam words count and ham words count and total words 
     spam_word_count = {}
     ham_word_count = {}
+    spam_total = 0
+    ham_total = 0
 
     # initialise the training and test sets
     train_set, test_set = features[:train_size], features[train_size:]
@@ -32,10 +34,15 @@ def train(features, samples_proportion):
     
     #Calculating word count in each class
     for (words, label) in train_set:
-        if label_of_email == 'spam':
+        if label == 'spam':
             for word in words:
                 spam_word_count[word] = spam_word_count.setdefault(word,0)+1
+                spam_total+=1
         else:
             for word in words:
                 ham_word_count[word] = ham_word_count.setdefault(word,0)+1
+                ham_total+=1
 
+    #Vocabulary of classes
+    spam_vocab = len(spam_word_count) 
+    ham_vocab = len(ham_word_count)
