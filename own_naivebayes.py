@@ -21,7 +21,7 @@ def train(features, samples_proportion):
     
     # train the classifier
 
-    #claculating prior probabilities of class
+    #Claculating prior probabilities of class
     for (words, label) in train_set:
         if(label == 'spam'):
             spam_count+=1
@@ -32,7 +32,7 @@ def train(features, samples_proportion):
 
     #Calculating likelihood of words in train_set
     
-    #Calculating word count in each class
+        #Calculating word count in each class
     for (words, label) in train_set:
         if label == 'spam':
             for word in words:
@@ -43,6 +43,18 @@ def train(features, samples_proportion):
                 ham_word_count[word] = ham_word_count.setdefault(word,0)+1
                 ham_total+=1
 
-    #Vocabulary of classes
+        #Vocabulary of classes
     spam_vocab = len(spam_word_count) 
     ham_vocab = len(ham_word_count)
+
+        #Calculating raw probabilities
+        #Initializing spam and ham raw probabilities
+        raw_spam_prob = {}
+        raw_ham_prob = {}
+    for (words,label) in tra_set:
+        if label == spam:
+            #Applying Laplace's solution
+            raw_spam_prob[word] = (float)((spam_word_count[word]+1)/(spam_total+spam_vocab))
+        else:
+            #Applying Laplace's solution
+            raw_ham_prob = (float)((ham_word_count[word]+1)/(ham_total+ham_vocab))
