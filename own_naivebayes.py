@@ -36,25 +36,34 @@ def train(features, samples_proportion):
     for (words, label) in train_set:
         if label == 'spam':
             for word in words:
-                spam_word_count[word] = spam_word_count.setdefault(word,0)+1
+                spam_word_count[word] = spam_word_count.setdefault(word,0.000000)+1
                 spam_total+=1
         else:
             for word in words:
-                ham_word_count[word] = ham_word_count.setdefault(word,0)+1
+                ham_word_count[word] = ham_word_count.setdefault(word,0.000000)+1
                 ham_total+=1
 
         #Vocabulary of classes
     spam_vocab = len(spam_word_count) 
     ham_vocab = len(ham_word_count)
 
+    print(spam_vocab, ham_vocab)
     #Calculating raw probabilities
     #Initializing spam and ham raw probabilities
     raw_spam_prob = {}
     raw_ham_prob = {}
+    i=0;
     for (words,label) in train_set:
         if label == 'spam':
-            #Applying Laplace's solution
-            raw_spam_prob[word] = (float)((spam_word_count.setdefault(word,0)+1)/(spam_total+spam_vocab))
+            for word in words:
+                #Applying Laplace's solution
+                raw_spam_prob[word] = (float)((spam_word_count.setdefault(word,0.000000)+1)/(spam_total+spam_vocab))
+                print(word,raw_spam_prob[word])
         else:
-            #Applying Laplace's solution
-            raw_ham_prob = (float)((ham_word_count.setdefault(word,0)+1)/(ham_total+ham_vocab))
+            for word in words:
+                #Applying Laplace's solution
+                raw_ham_prob[word] = (float)((ham_word_count.setdefault(word,0.000000)+1)/(ham_total+ham_vocab))
+                i+=1
+                print(word,raw_ham_prob[word])
+    #for word,prob in raw_spam_prob.iteritems():
+        #print(word,prob)
