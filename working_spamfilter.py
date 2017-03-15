@@ -6,11 +6,12 @@ from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 import spam_filter as sf
 
+#Driver program to run spamfilter.py
 def run_online(classifier, setting):
     while True:
-    features = sf.get_features(raw_input('Your new email: '), setting)
-    if (len(features) == 0):
-        break
+        features = sf.get_features(raw_input('Your new email: '), setting)
+        if (len(features) == 0):
+            break
     print (classifier.classify(features))
 
 def detect_spam(folder, classifier, setting):
@@ -57,10 +58,10 @@ if __name__ == "__main__":
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
 
-    spam2 = sf.init_lists('enron2/spam/')
-    ham2 = sf.init_lists('enron2/ham/')
-    all_emails += [(email, 'spam') for email in spam2]
-    all_emails += [(email, 'ham') for email in ham2]
+    #spam2 = sf.init_lists('enron2/spam/')
+    #ham2 = sf.init_lists('enron2/ham/')
+    #all_emails += [(email, 'spam') for email in spam2]
+    #all_emails += [(email, 'ham') for email in ham2]
 
     random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')

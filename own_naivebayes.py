@@ -1,6 +1,7 @@
 import os
 from collections import Counter
 
+#Own naive bayes implementation
 def train(features, samples_proportion):
     train_size = int(len(features) * samples_proportion)
     
@@ -47,7 +48,6 @@ def train(features, samples_proportion):
     spam_vocab = len(spam_word_count) 
     ham_vocab = len(ham_word_count)
 
-    print(spam_vocab, ham_vocab)
     #Calculating raw probabilities
     #Initializing spam and ham raw probabilities
     raw_spam_prob = {}
@@ -58,12 +58,9 @@ def train(features, samples_proportion):
             for word in words:
                 #Applying Laplace's solution
                 raw_spam_prob[word] = (float)((spam_word_count.setdefault(word,0.000000)+1)/(spam_total+spam_vocab))
-                print(word,raw_spam_prob[word])
         else:
             for word in words:
                 #Applying Laplace's solution
                 raw_ham_prob[word] = (float)((ham_word_count.setdefault(word,0.000000)+1)/(ham_total+ham_vocab))
-                i+=1
-                print(word,raw_ham_prob[word])
-    #for word,prob in raw_spam_prob.iteritems():
-        #print(word,prob)
+    
+    return train_set, test_set, raw_spam_prob, raw_ham_prob

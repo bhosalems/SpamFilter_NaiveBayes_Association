@@ -7,7 +7,7 @@ from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk import NaiveBayesClassifier, classify
 
-
+#Contains implementation of only naive bayes form NLTK
 stoplist = stopwords.words('english')
 
 def init_lists(folder):

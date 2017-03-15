@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk import NaiveBayesClassifier, classify
 import own_naivebayes as owncl
 #import own_naivebayes.classifier as owncl
+#Driver program to run own naive bayes with apriory
 stoplist = stopwords.words('english')
 
 def init_lists(folder):
@@ -98,8 +99,7 @@ if __name__ == "__main__" :
 
 
     # train the our own naivebayes classifier and collect map of raw probabilities of words
-    #train_set, test_set, raw_probabilities, classifier = train(all_features, 0.8)
-    owncl.train(all_features, 0.8)
+    train_set, test_set, raw_spam_prob, raw_ham_prob= owncl.train(all_features, 0.8)
 
 
     # evaluate its performance
