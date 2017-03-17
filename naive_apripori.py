@@ -108,6 +108,10 @@ if __name__ == "__main__" :
     #vocabulary = number of words in the spam/ham final frequent item set.
     
     for (spam_frequent_word, count) in spam_frequent
-        raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)  
+        raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
+
+    for (ham_frequent_word, count) in ham_frequent
+        raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
+
     # evaluate its performance
     #evaluate(train_set, test_set, classifier)
