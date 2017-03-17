@@ -51,7 +51,7 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
             wordsset_in_email.add(word)
         label_of_email = label
         #Collecting count of each word in Spam and Ham dictionary
-        if label_of_email == 'spam':
+        if label_of_email == 'spam':    
             for word in wordsset_in_email:
                 spam_word_count[word] = spam_word_count.setdefault(word,0)+1
         else:
@@ -98,9 +98,11 @@ if __name__ == "__main__" :
     #print(ham_frequent)
 
 
-    # train the our own naivebayes classifier and collect map of raw probabilities of words
-    train_set, test_set, raw_spam_prob, raw_ham_prob= owncl.train(all_features, 0.8)
+    # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
+    train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab= owncl.train(all_features, 0.8)
 
-
+    #Replacing raw probabilities of frequent words
+    for (spam_frequent_word, count) in spam_frequent
+        raw_spam_prob[spam_frequent_word] = raw_spam_prob[spam_frequent_word].setdefault(spam_frequent_word,0)  
     # evaluate its performance
     #evaluate(train_set, test_set, classifier)
