@@ -99,18 +99,27 @@ if __name__ == "__main__" :
 
 
     # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
-    train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab= owncl.train(all_features, 0.8)
-
+    t = owncl.train(all_features, 0.8)
+    print(len(t))
+    train_set = t[0]
+    test_set = t[1] 
+    raw_spam_prob = t[2]
+    raw_ham_prob = t[3]
+    spam_total = t[4]
+    ham_total = t[5]
+    spam_vocab = t[6]
+    ham_vocab = t[7]
     #Replacing raw probabilities of frequent words
     #Using following function
     #Papri (word|spam/ ham) =nf/(napr + vocabulary)
     #nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
     #vocabulary = number of words in the spam/ham final frequent item set.
     
-    for (spam_frequent_word, count) in spam_frequent
+    for (spam_frequent_word, count) in spam_frequent:
         raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
+        print(raw_spam_prob[spam_frequent_word])
 
-    for (ham_frequent_word, count) in ham_frequent
+    for (ham_frequent_word, count) in ham_frequent:
         raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
 
     # evaluate its performance
