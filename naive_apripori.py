@@ -102,7 +102,12 @@ if __name__ == "__main__" :
     train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab= owncl.train(all_features, 0.8)
 
     #Replacing raw probabilities of frequent words
+    #Using following function
+    #Papri (word|spam/ ham) =nf/(napr + vocabulary)
+    #nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
+    #vocabulary = number of words in the spam/ham final frequent item set.
+    
     for (spam_frequent_word, count) in spam_frequent
-        raw_spam_prob[spam_frequent_word] = raw_spam_prob[spam_frequent_word].setdefault(spam_frequent_word,0)  
+        raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)  
     # evaluate its performance
     #evaluate(train_set, test_set, classifier)
