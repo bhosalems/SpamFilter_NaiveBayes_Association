@@ -53,12 +53,35 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
     ham_frequent = {word:count for (word,count) in ham_word_count.items() if count > ham_support_count}
     return spam_frequent, ham_frequent
 
-def evaluate(train_set, test_set, classifier):
+def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob):
     # check how the classifier performs on the training and test sets
-    print ('Accuracy on the training set = ' + str(classify.accuracy(classifier, train_set)))
-    print ('Accuracy of the test set = ' + str(classify.accuracy(classifier, test_set)))
+    train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob)
+    test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob)
+    print ('Accuracy on the training set = 'train_accuracy)
+    print ('Accuracy of the test set = 'test_accuracy)
     # check which words are most informative for the classifier
-    classifier.show_most_informative_features(20)
+    
+def classify(data_set, raw_spam_prob, raw_ham_prob):
+    all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
+    total_mail=0
+    for(features,label) in all_features:
+        spam_prob = 1
+        ham_prob = 1
+        is_spam = False
+        correct_count = 0 
+        for word in features: 
+            spam_prob = spam_prob*raw_spam_prob[word]
+            ham_prob = ham_prob*raw_ham_prob[word]
+        if(spam_prob>ham_prob):
+            is_spam = True
+        else:
+            is_spam = False
+        if ((label==spam) && is_spam):
+            correct_count+=1;
+        if ((label==ham) && !(is_spam)):
+            correct_count+=1; 
+        total_mail+=1
+    return (correct_count/total_mail)
 
 if __name__ == "__main__" :
     # initialise the data
@@ -84,10 +107,6 @@ if __name__ == "__main__" :
 
     #get the spam frequent itemset and ham frequent itemset
     spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
-    #print(spam_frequent)
-    #print("\n")
-    #print(ham_frequent)
-
 
     # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
     t = owncl.train(all_features, 0.8)
@@ -115,4 +134,4 @@ if __name__ == "__main__" :
         print(raw_ham_prob[ham_frequent_word])
     
     # evaluate its performance
-    #evaluate(train_set, test_set, classifier)
+    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob)
