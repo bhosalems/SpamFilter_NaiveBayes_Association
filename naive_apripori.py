@@ -76,13 +76,13 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
                 try:
                     spam_prob = spam_prob*raw_spam_prob[word]
                 except KeyError:
-                    raw_spam_prob[word]= 
-                    spam_prob =
+                    raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
+                    spam_prob = spam_prob*raw_spam_prob[word]
                 try:
                     ham_prob = ham_prob*raw_ham_prob[word]
                 except KeyError:
-                    raw_ham_prob[word]=
-                    ham_prob =
+                    raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
+                    ham_prob = ham_prob*raw_ham_prob[word]
             else:
 
 
