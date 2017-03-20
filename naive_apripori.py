@@ -57,11 +57,11 @@ def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob):
     # check how the classifier performs on the training and test sets
     train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob)
     test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob)
-    print ('Accuracy on the training set = 'train_accuracy)
-    print ('Accuracy of the test set = 'test_accuracy)
+    print ('Accuracy on the training set = '+train_accuracy)
+    print ('Accuracy of the test set = '+test_accuracy)
     # check which words are most informative for the classifier
     
-def classify(data_set, raw_spam_prob, raw_ham_prob):
+def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab):
     all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     total_mail=0
     for(features,label) in all_features:
@@ -70,15 +70,29 @@ def classify(data_set, raw_spam_prob, raw_ham_prob):
         is_spam = False
         correct_count = 0 
         for word in features: 
-            spam_prob = spam_prob*raw_spam_prob[word]
-            ham_prob = ham_prob*raw_ham_prob[word]
+            if label == 'spam':
+                #Handling probability of non occuring words with laplaces
+                
+                try:
+                    spam_prob = spam_prob*raw_spam_prob[word]
+                except KeyError:
+                    raw_spam_prob[word]= 
+                    spam_prob =
+                try:
+                    ham_prob = ham_prob*raw_ham_prob[word]
+                except KeyError:
+                    raw_ham_prob[word]=
+                    ham_prob =
+            else:
+
+
         if(spam_prob>ham_prob):
             is_spam = True
         else:
             is_spam = False
-        if ((label==spam) && is_spam):
+        if ((label==spam) and is_spam):
             correct_count+=1;
-        if ((label==ham) && !(is_spam)):
+        if ((label==ham) and not(is_spam)):
             correct_count+=1; 
         total_mail+=1
     return (correct_count/total_mail)
@@ -134,4 +148,4 @@ if __name__ == "__main__" :
         print(raw_ham_prob[ham_frequent_word])
     
     # evaluate its performance
-    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob)
+    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
