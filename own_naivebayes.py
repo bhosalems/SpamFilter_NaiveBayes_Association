@@ -63,4 +63,4 @@ def train(features, samples_proportion):
                 #Applying Laplace's solution
                 raw_ham_prob[word] = (float)((ham_word_count.setdefault(word,0.000000)+1)/(ham_total+ham_vocab))
     
-    return [train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab]
+    return [train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior]

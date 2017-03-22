@@ -53,39 +53,35 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
     ham_frequent = {word:count for (word,count) in ham_word_count.items() if count > ham_support_count}
     return spam_frequent, ham_frequent
 
-def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob):
+def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior):
     # check how the classifier performs on the training and test sets
-    train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob)
-    test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob)
-    print ('Accuracy on the training set = '+train_accuracy)
-    print ('Accuracy of the test set = '+test_accuracy)
+    train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
+    test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
+    print ('Accuracy on the training set = '+str(train_accuracy))
+    print ('Accuracy of the test set = '+str(test_accuracy))
     # check which words are most informative for the classifier
     
 def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab):
     all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     total_mail=0
+    correct_count = 0.0000000
     for(features,label) in all_features:
         spam_prob = 1
         ham_prob = 1
-        is_spam = False
-        correct_count = 0 
+        is_spam = False 
         for word in features: 
-            if label == 'spam':
-                #Handling probability of non occuring words with laplaces
+            #Handling probability of non occuring words with laplaces
                 
-                try:
-                    spam_prob = spam_prob*raw_spam_prob[word]
-                except KeyError:
-                    raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
-                    spam_prob = spam_prob*raw_spam_prob[word]
-                try:
-                    ham_prob = ham_prob*raw_ham_prob[word]
-                except KeyError:
-                    raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
-                    ham_prob = ham_prob*raw_ham_prob[word]
-            else:
-
-
+            try:
+                spam_prob = spam_prob*raw_spam_prob[word]
+            except KeyError:
+                raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
+                spam_prob = spam_prob*raw_spam_prob[word]
+            try:
+                ham_prob = ham_prob*raw_ham_prob[word]
+            except KeyError:
+                raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
+                ham_prob = ham_prob*raw_ham_prob[word]
         if(spam_prob>ham_prob):
             is_spam = True
         else:
@@ -95,6 +91,7 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
         if ((label==ham) and not(is_spam)):
             correct_count+=1; 
         total_mail+=1
+    print(correct_count)
     return (correct_count/total_mail)
 
 if __name__ == "__main__" :
@@ -132,6 +129,8 @@ if __name__ == "__main__" :
     ham_total = t[5]
     spam_vocab = t[6]
     ham_vocab = t[7]
+    spam_prior = t[8]
+    ham_prior = t[9]
 
     #Replacing raw probabilities of frequent words
     #Using following function
@@ -141,11 +140,9 @@ if __name__ == "__main__" :
     
     for spam_frequent_word, count in spam_frequent.iteritems():
         raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
-        print(raw_spam_prob[spam_frequent_word])
 
     for ham_frequent_word, count in ham_frequent.iteritems():
         raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
-        print(raw_ham_prob[ham_frequent_word])
     
     # evaluate its performance
-    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
+    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
