@@ -57,36 +57,42 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
 
 def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior):
     # check how the classifier performs on the training and test sets
-    train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
-    test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab)
+    train_accuracy = classify(train_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total,spam_vocab, ham_vocab, spam_prior, ham_prior)
+    test_accuracy = classify(test_set,raw_spam_prob,raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
     print ('Accuracy on the training set = '+str(train_accuracy))
     print ('Accuracy of the test set = '+str(test_accuracy))
     # check which words are most informative for the classifier
     
-def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab):
+def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior):
     all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     total_mail=0
+    cnt1 = 0
+    cnt2 = 0
     correct_count = 0.0000000
     for(features,label) in all_features:
-        spam_prob = 1
-        ham_prob = 1
+        spam_prob = 1.000000
+        ham_prob = 1.000000
         is_spam = False 
         for word in features: 
             #Handling probability of non occuring words with laplaces
                 
-            try:
-                raw_spam_prob[word]
-                #spam_prob = numpy.log(spam_prob) + numpy.log(raw_spam_prob[word])
-            except KeyError:
-                raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
-                #spam_prob = numpy.log(spam_prob) + numpy.log(raw_spam_prob[word])
-            try:
-                raw_ham_prob[word]
-                #ham_prob = numpy.log(ham_prob) + numpy.log(raw_ham_prob[word])
-            except KeyError:
-                raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
-                #ham_prob = numpy.log(ham_prob) + numpy.log(raw_ham_prob[word])
+            #try:
+            raw_spam_prob[word]
+            cnt1+=1
+            spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+            #except KeyError:
+            #   cnt2+=1
+            #    raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
+            #    spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+            #try:
+            raw_ham_prob[word]
+            ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+            #except KeyError:
+            #    raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
+            #    ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+            
             print(word,raw_spam_prob[word],raw_ham_prob[word])
+        
         if(spam_prob>ham_prob):
             is_spam = True
         else:
@@ -96,7 +102,7 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
         if ((label==ham) and not(is_spam)):
             correct_count+=1; 
         total_mail+=1
-    print(correct_count)
+    print('correct count' +str(correct_count), 'cnt1'+ str(cnt1), 'cnt2'+ str(cnt2))
     return (correct_count/total_mail)
 
 if __name__ == "__main__" :
@@ -136,7 +142,9 @@ if __name__ == "__main__" :
     ham_vocab = t[7]
     spam_prior = t[8]
     ham_prior = t[9]
-
+    #for words, label in train_set:
+    #    print(label)
+    #print(raw_spam_prob)
     #Replacing raw probabilities of frequent words
     #Using following function
     #Papri (word|spam/ ham) =nf/(napr + vocabulary)
@@ -149,5 +157,6 @@ if __name__ == "__main__" :
     for ham_frequent_word, count in ham_frequent.iteritems():
         raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
     
+
     # evaluate its performance
-    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
+    #evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
