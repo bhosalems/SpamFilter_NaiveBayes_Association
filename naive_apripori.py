@@ -30,7 +30,7 @@ def get_features(text, setting):
     if setting=='bow':
         return {word: count for word, count in Counter(preprocess(text)).items() if not word in stoplist}
     else:
-        return {word for word in preprocess(text) if not word in stoplist}
+        return [word for word in preprocess(text) if not word in stoplist]
 
 
 def get_frequent(all_features, spam_support_count, ham_support_count):
