@@ -51,8 +51,6 @@ def train(features, samples_proportion):
     print('Spam mail count in train set:'+str(spam_count))
     print('Ham mail count in train set:'+str(ham_count))
     
-    print(train_set)
-
     #Calculating raw probabilities
     #Initializing spam and ham raw probabilities
     raw_spam_prob = {}

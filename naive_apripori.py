@@ -30,7 +30,7 @@ def get_features(text, setting):
     if setting=='bow':
         return {word: count for word, count in Counter(preprocess(text)).items() if not word in stoplist}
     else:
-        return [word for word in preprocess(text) if not word in stoplist]
+        return {word for word in preprocess(text) if not word in stoplist}
 
 
 def get_frequent(all_features, spam_support_count, ham_support_count):
@@ -76,20 +76,20 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
         for word in features: 
             #Handling probability of non occuring words with laplaces
                 
-            #try:
-            raw_spam_prob[word]
-            cnt1+=1
-            spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
-            #except KeyError:
-            #   cnt2+=1
-            #    raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
-            #    spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
-            #try:
-            raw_ham_prob[word]
-            ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
-            #except KeyError:
-            #    raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
-            #    ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+            try:
+                raw_spam_prob[word]
+                cnt1+=1
+                spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+            except KeyError:
+                cnt2+=1
+                raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
+                spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+            try:
+                raw_ham_prob[word]
+                ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+            except KeyError:
+                raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
+                ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
             
             print(word,raw_spam_prob[word],raw_ham_prob[word])
         
@@ -145,6 +145,7 @@ if __name__ == "__main__" :
     #for words, label in train_set:
     #    print(label)
     #print(raw_spam_prob)
+    
     #Replacing raw probabilities of frequent words
     #Using following function
     #Papri (word|spam/ ham) =nf/(napr + vocabulary)
@@ -159,4 +160,4 @@ if __name__ == "__main__" :
     
 
     # evaluate its performance
-    #evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
+    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
