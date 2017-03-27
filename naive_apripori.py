@@ -91,8 +91,6 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
                 raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
                 ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
             
-            print(word,raw_spam_prob[word],raw_ham_prob[word])
-        
         if(spam_prob>ham_prob):
             is_spam = True
         else:
@@ -102,6 +100,12 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
         if ((label==ham) and not(is_spam)):
             correct_count+=1; 
         total_mail+=1
+    
+    print("Raw Spam Probabilities\n\n")    
+    print(raw_spam_prob)
+
+    print("\n\nRaw Ham Probabilities\n\n")
+    print(raw_spam_prob)
     print('correct count' +str(correct_count), 'cnt1'+ str(cnt1), 'cnt2'+ str(cnt2))
     return (correct_count/total_mail)
 
@@ -113,7 +117,7 @@ if __name__ == "__main__" :
     ham_size = len(ham)
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
-    random.shuffle(all_emails)
+    #random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')
 
     # extract the features
@@ -158,6 +162,7 @@ if __name__ == "__main__" :
     for ham_frequent_word, count in ham_frequent.iteritems():
         raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
     
+
 
     # evaluate its performance
     evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
