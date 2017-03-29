@@ -64,12 +64,11 @@ def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_t
     # check which words are most informative for the classifier
     
 def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior):
-    all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
     total_mail=0
     cnt1 = 0
     cnt2 = 0
     correct_count = 0.0000000
-    for(features,label) in all_features:
+    for(features,label) in data_set:
         spam_prob = 1.000000
         ham_prob = 1.000000
         is_spam = False 
@@ -77,20 +76,18 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
             #Handling probability of non occuring words with laplaces
                 
             try:
-                raw_spam_prob[word]
-                cnt1+=1
                 spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
             except KeyError:
-                cnt2+=1
                 raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
                 spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
             try:
-                raw_ham_prob[word]
                 ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
             except KeyError:
                 raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
                 ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
-            
+        
+        print(spam_prob, ham_prob)
+
         if(spam_prob>ham_prob):
             is_spam = True
         else:
@@ -101,12 +98,12 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
             correct_count+=1; 
         total_mail+=1
     
-    print("Raw Spam Probabilities\n\n")    
-    print(raw_spam_prob)
+    #print("Raw Spam Probabilities\n\n")    
+    #print(raw_spam_prob)
 
-    print("\n\nRaw Ham Probabilities\n\n")
-    print(raw_spam_prob)
-    print('correct count' +str(correct_count), 'cnt1'+ str(cnt1), 'cnt2'+ str(cnt2))
+    #print("\n\nRaw Ham Probabilities\n\n")
+    #print(raw_spam_prob)
+    print('correct count' +str(correct_count))
     return (correct_count/total_mail)
 
 if __name__ == "__main__" :
@@ -115,7 +112,7 @@ if __name__ == "__main__" :
     ham = init_lists('enron1/ham/')
     spam_size = len(spam) 
     ham_size = len(ham)
-    all_emails = [(email, 'spam') for email in spam]
+    all_emails = [(email, 'ham') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
     #random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')
@@ -132,7 +129,7 @@ if __name__ == "__main__" :
     print('Ham support count:'+str(ham_support_count))
 
     #get the spam frequent itemset and ham frequent itemset
-    spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
+    #spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
 
     # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
     t = owncl.train(all_features, 0.8)
@@ -148,6 +145,7 @@ if __name__ == "__main__" :
     ham_prior = t[9]
     #for words, label in train_set:
     #    print(label)
+    
     #print(raw_spam_prob)
     
     #Replacing raw probabilities of frequent words
@@ -156,11 +154,12 @@ if __name__ == "__main__" :
     #nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
     #vocabulary = number of words in the spam/ham final frequent item set.
     
-    for spam_frequent_word, count in spam_frequent.iteritems():
-        raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
+    
+    #for spam_frequent_word, count in spam_frequent.iteritems():
+    #    raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
 
-    for ham_frequent_word, count in ham_frequent.iteritems():
-        raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
+    #for ham_frequent_word, count in ham_frequent.iteritems():
+    #    raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
     
 
 
