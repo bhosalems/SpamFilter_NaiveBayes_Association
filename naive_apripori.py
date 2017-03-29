@@ -76,16 +76,18 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
             #Handling probability of non occuring words with laplaces
                 
             try:
-                spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+                spam_prob = numpy.log(raw_spam_prob[word])*spam_prob
             except KeyError:
                 raw_spam_prob[word]= (1/(spam_total+spam_vocab+1))
-                spam_prob = (numpy.log(spam_prior) + numpy.log(raw_spam_prob[word]))*spam_prob
+                spam_prob = numpy.log(raw_spam_prob[word])*spam_prob
             try:
-                ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+                ham_prob = numpy.log(raw_ham_prob[word])*ham_prob
             except KeyError:
                 raw_ham_prob[word]= (1/(ham_total+ham_vocab+1))
-                ham_prob = (numpy.log(ham_prior) + numpy.log(raw_ham_prob[word]))*ham_prob
+                ham_prob = numpy.log(raw_ham_prob[word])*ham_prob
         
+        spam_prob += numpy.log(spam_prior)
+        ham_prob += numpy.log(ham_prior)
         print(spam_prob, ham_prob)
 
         if(spam_prob>ham_prob):
