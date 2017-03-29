@@ -114,18 +114,20 @@ s = raw_input()
 
 if(s=='Y'):
     # initialise the data
-    spam = init_lists('enron1/spam/')
-    ham = init_lists('enron1/ham/')
+    spam = init_lists('Modified_testing_data/spam/')
+    ham = init_lists('Modified_testing_data/ham/')
     spam_size = len(spam) 
     ham_size = len(ham)
-    all_emails = [(email, 'ham') for email in spam]
-    all_emails += [(email, 'ham') for email in ham]
+    spam_emails = [(email, 'spam') for email in spam]
+    ham_emails += [(email, 'ham') for email in ham]
     #random.shuffle(all_emails)
-    print ('Corpus size = ' + str(len(all_emails)) + ' emails')
+    print ('Spam corpus size = ' + str(len(all_emails)) + ' emails')
+    print ('Ham corpus size = ' + str(len(all_emails)) + ' emails')
 
     # extract the features
-    all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
-    print ('Collected ' + str(len(all_features)) + ' feature sets')
+    spam_features = [(get_features(email, ''), label) for (email, label) in spam_emails]
+    ham_features = [(get_features(email, ''), label) for (email, label) in ham_emails]
+    print ('Collected ' + str(len(spam_features)+len(ham_features)) + ' feature sets')
 
     #define Support value in %
     support = 10 
@@ -178,7 +180,7 @@ else:
     ham = init_lists('enron1/ham/')
     spam_size = len(spam) 
     ham_size = len(ham)
-    all_emails = [(email, 'ham') for email in spam]
+    all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
     #random.shuffle(all_emails)
     print ('Corpus size = ' + str(len(all_emails)) + ' emails')
