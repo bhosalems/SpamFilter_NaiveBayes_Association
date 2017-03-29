@@ -140,7 +140,7 @@ if(s=='Y'):
     #spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
 
     # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
-    t = owncl.train(all_features, 0.8)
+    t = owncl.Modified_train_test(spam_features, ham_features)
     train_set = t[0]
     test_set = t[1] 
     raw_spam_prob = t[2]

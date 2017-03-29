@@ -14,18 +14,17 @@ def Modified_train_test(spam_features, ham_features)
     ham_total = 0
 
     # initialise the training and test sets
-    train_set, test_set = features[:train_size], features[train_size:]
-    print ('Training set size = ' + str(len(train_set)) + ' emails')
-    print ('Test set size = ' + str(len(test_set)) + ' emails')
     
+    print ('Spam training set size = ' + str(len(spam_features)) + ' emails')
+    print ('Ham training set size = ' + str(len(ham_features)) + ' emails')
+    train_set=spam_features[:1]+ham_features[:1]
+    test_set=spam_features[1:]+ham_features[:1]
+
     # train the classifier
 
     #Claculating prior probabilities of class
-    for (words, label) in train_set:
-        if(label == 'spam'):
-            spam_count+=1
-        else:
-            ham_count+=1
+    spam_count=len(spam_features)
+    ham_count=len(ham_features)
     spam_prior = spam_count/len(train_set)
     ham_prior = ham_count/len(train_set)
 
@@ -41,8 +40,7 @@ def Modified_train_test(spam_features, ham_features)
             for word in words:
                 ham_word_count[word] = ham_word_count.setdefault(word,0.000000)+1
                 ham_total+=1
-
-        #Vocabulary of classes
+    #Vocabulary of classes
     spam_vocab = len(spam_word_count) 
     ham_vocab = len(ham_word_count)
 
@@ -63,7 +61,7 @@ def Modified_train_test(spam_features, ham_features)
             for word in words:
                 #Applying Laplace's solution
                 raw_ham_prob[word] = (float)((ham_word_count.setdefault(word,0.000000)+1)/(ham_total+ham_vocab))
-    
+
     return [train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior]
 
 
