@@ -109,6 +109,10 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
     return (correct_count/total_mail)
 
 if __name__ == "__main__" :
+    print("Are you doing modified testing:Y or N")
+s = raw_input()
+
+if(s=='Y'):
     # initialise the data
     spam = init_lists('enron1/spam/')
     ham = init_lists('enron1/ham/')
@@ -147,22 +151,82 @@ if __name__ == "__main__" :
     ham_prior = t[9]
     #for words, label in train_set:
     #    print(label)
-    
+
     #print(raw_spam_prob)
-    
+
     #Replacing raw probabilities of frequent words
     #Using following function
     #Papri (word|spam/ ham) =nf/(napr + vocabulary)
     #nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
     #vocabulary = number of words in the spam/ham final frequent item set.
-    
-    
+
+
     #for spam_frequent_word, count in spam_frequent.iteritems():
     #    raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
 
     #for ham_frequent_word, count in ham_frequent.iteritems():
     #    raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
-    
+
+
+
+    # evaluate its performance
+    evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_vocab, ham_vocab, spam_prior, ham_prior)
+else:
+
+    # initialise the data
+    spam = init_lists('enron1/spam/')
+    ham = init_lists('enron1/ham/')
+    spam_size = len(spam) 
+    ham_size = len(ham)
+    all_emails = [(email, 'ham') for email in spam]
+    all_emails += [(email, 'ham') for email in ham]
+    #random.shuffle(all_emails)
+    print ('Corpus size = ' + str(len(all_emails)) + ' emails')
+
+    # extract the features
+    all_features = [(get_features(email, ''), label) for (email, label) in all_emails]
+    print ('Collected ' + str(len(all_features)) + ' feature sets')
+
+    #define Support value in %
+    support = 10 
+    spam_support_count = (spam_size * 10)/ 100;
+    ham_support_count = (ham_size * 10)/ 100;
+    print('Spam support count:'+str(spam_support_count))
+    print('Ham support count:'+str(ham_support_count))
+
+    #get the spam frequent itemset and ham frequent itemset
+    #spam_frequent, ham_frequent = get_frequent(all_features, spam_support_count, ham_support_count)
+
+    # train the our own naivebayes classifier and collect dictionary of raw probabilities of words
+    t = owncl.train(all_features, 0.8)
+    train_set = t[0]
+    test_set = t[1] 
+    raw_spam_prob = t[2]
+    raw_ham_prob = t[3]
+    spam_total = t[4]
+    ham_total = t[5]
+    spam_vocab = t[6]
+    ham_vocab = t[7]
+    spam_prior = t[8]
+    ham_prior = t[9]
+    #for words, label in train_set:
+    #    print(label)
+
+    #print(raw_spam_prob)
+
+    #Replacing raw probabilities of frequent words
+    #Using following function
+    #Papri (word|spam/ ham) =nf/(napr + vocabulary)
+    #nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
+    #vocabulary = number of words in the spam/ham final frequent item set.
+
+
+    #for spam_frequent_word, count in spam_frequent.iteritems():
+    #    raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
+
+    #for ham_frequent_word, count in ham_frequent.iteritems():
+    #    raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
+
 
 
     # evaluate its performance
