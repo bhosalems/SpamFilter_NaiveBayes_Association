@@ -84,15 +84,16 @@ def frequency_in_ham_spam(train_set):
 
     spam_total = 0
     ham_total = 0
-
-    for (words, label) in train_set:
+    for (frequency, label) in train_set:
         if label == 'spam':
-            for word in words:
-                spam_word_count[word] = spam_word_count.setdefault(word, 0.0) + 1
+            for key in frequency:
+                spam_word_count.setdefault(key, 0.0)
+                spam_word_count[key] += frequency[key]
                 spam_total += 1
         else:
-            for word in words:
-                ham_word_count[word] = ham_word_count.setdefault(word, 0.0) + 1
+            for key in frequency:
+                ham_word_count.setdefault(key, 0.0)
+                ham_word_count[key] += frequency[key]
                 ham_total += 1
     return ham_total, spam_total
 
@@ -115,7 +116,6 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
     for (features, label) in data_set:
         spam_prob = 1.000000
         ham_prob = 1.000000
-
         is_spam = check_spam(features, ham_prior, ham_prob, ham_total, ham_vocab, raw_ham_prob, raw_spam_prob,
                              spam_prior, spam_prob, spam_total, spam_vocab)
 
