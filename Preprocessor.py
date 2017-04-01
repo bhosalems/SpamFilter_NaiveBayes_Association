@@ -5,6 +5,7 @@ from nltk import WordNetLemmatizer, word_tokenize
 from nltk.corpus import stopwords
 
 stoplist = stopwords.words('english')
+stoplist = stoplist + ['Subject','subject','SUBJECT',':','To','From']
 
 def init_lists(folder):
     a_list = []

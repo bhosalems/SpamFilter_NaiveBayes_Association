@@ -60,7 +60,7 @@ def train(samples_proportion=0.8):
 
     ham_prior, words_in_ham, ham_vocab, raw_ham_prob, raw_spam_prob, spam_prior, words_in_spam, spam_vocab, test_set, train_set = get_parameters(
         t)
-
+    print("Train Size:" + str(len(train_set)) + str(' Test size:') + str(len(test_set)))
     evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, words_in_spam, words_in_ham, spam_vocab, ham_vocab,
              spam_prior,
              ham_prior)
@@ -140,11 +140,13 @@ def check_spam(features, ham_prior, ham_prob, ham_total, ham_vocab, raw_ham_prob
         except KeyError:
             raw_spam_prob[word] = (1 / (spam_total + spam_vocab + 1))
             spam_prob = raw_spam_prob[word] * spam_prob
+
         try:
             ham_prob = raw_ham_prob[word] * ham_prob
         except KeyError:
             raw_ham_prob[word] = (1 / (ham_total + ham_vocab + 1))
             ham_prob = raw_ham_prob[word] * ham_prob
+
     spam_prob *= spam_prior
     ham_prob *= ham_prior
     if spam_prob > ham_prob:
@@ -169,8 +171,8 @@ def evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, spam_total, ham_t
 
 
 def read_spam_ham():
-    spam = Preprocessor.init_lists('enron_full/spam/')
-    ham = Preprocessor.init_lists('enron_full/ham/')
+    spam = Preprocessor.init_lists('enron1 (copy)/spam/')
+    ham = Preprocessor.init_lists('enron1 (copy)/ham/')
     return ham, spam
 
 
