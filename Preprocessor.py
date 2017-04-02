@@ -1,11 +1,12 @@
 import os
 from collections import Counter
 
-from nltk import WordNetLemmatizer, word_tokenize
+from nltk import WordNetLemmatizer
 from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
 
 stoplist = stopwords.words('english')
-stoplist = stoplist + ['Subject','subject','SUBJECT',':','To','From']
+stoplist = stoplist + ['Subject','subject','SUBJECT',':','To','From','enron','\n']
 
 def init_lists(folder):
     a_list = []
@@ -19,14 +20,15 @@ def init_lists(folder):
 
 def preprocess(sentence):
     lemmatizer = WordNetLemmatizer()
-    return [lemmatizer.lemmatize(word.lower()) for word in word_tokenize(unicode(sentence, errors='ignore'))]
+    toker = RegexpTokenizer(r'((?<=[^\w\s])\w(?=[^\w\s])|(\W))+', gaps=True)
+    return [lemmatizer.lemmatize(word.lower()) for word in toker.tokenize(unicode(sentence, errors='ignore'))]
 
 
 def get_features(text, setting):
     if setting == 'bow':
         return {word: count for word, count in Counter(preprocess(text)).items() if not word in stoplist}
     else:
-        return {word for word in preprocess(text) if not word in stoplist}
+        return {word: True for word in preprocess(text) if not word in stoplist}
 
 def get_frequent(all_features, spam_support_count, ham_support_count):
     spam_word_count = {}
@@ -48,6 +50,7 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
     # Taking words having count greater than support counts
     spam_frequent = {word: count for (word, count) in spam_word_count.items() if count > spam_support_count}
     ham_frequent = {word: count for (word, count) in ham_word_count.items() if count > ham_support_count}
+    print(spam_frequent, ham_frequent)
     return spam_frequent, ham_frequent
 
 

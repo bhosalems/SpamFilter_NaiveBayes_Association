@@ -12,7 +12,7 @@ raw_spam_prob = {}
 raw_ham_prob = {}
 
 
-def train(samples_proportion=0.8):
+def train(samples_proportion=0.7):
     global words_in_ham, ham_word_count, words_in_spam, spam_word_count, raw_ham_prob, raw_spam_prob
 
     ham, spam = read_spam_ham()
@@ -25,7 +25,7 @@ def train(samples_proportion=0.8):
 
     print('Corpus size = ' + str(len(all_emails)) + ' emails')
 
-    features = [(Preprocessor.get_features(email, 'bow'), label) for (email, label) in all_emails]
+    features = [(Preprocessor.get_features(email, ' '), label) for (email, label) in all_emails]
 
     print('Collected ' + str(len(features)) + ' feature sets')
 
@@ -61,6 +61,7 @@ def train(samples_proportion=0.8):
     ham_prior, words_in_ham, ham_vocab, raw_ham_prob, raw_spam_prob, spam_prior, words_in_spam, spam_vocab, test_set, train_set = get_parameters(
         t)
     print("Train Size:" + str(len(train_set)) + str(' Test size:') + str(len(test_set)))
+
     evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, words_in_spam, words_in_ham, spam_vocab, ham_vocab,
              spam_prior,
              ham_prior)
@@ -114,16 +115,16 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
     total_mail = 0
     correct_count = 0.0000000
     for (features, label) in data_set:
-        spam_prob = 1.000000
-        ham_prob = 1.000000
+        spam_prob = spam_prior
+        ham_prob = ham_prior
         is_spam = check_spam(features, ham_prior, ham_prob, ham_total, ham_vocab, raw_ham_prob, raw_spam_prob,
                              spam_prior, spam_prob, spam_total, spam_vocab)
 
         if (label == 'spam') and is_spam:
-            correct_count += 1;
+            correct_count += 1
 
         if (label == 'ham') and not (is_spam):
-            correct_count += 1;
+            correct_count += 1
         total_mail += 1
 
     print('correct count' + str(correct_count))
@@ -138,17 +139,15 @@ def check_spam(features, ham_prior, ham_prob, ham_total, ham_vocab, raw_ham_prob
         try:
             spam_prob = raw_spam_prob[word] * spam_prob
         except KeyError:
-            raw_spam_prob[word] = (1 / (spam_total + spam_vocab + 1))
+            raw_spam_prob[word] = (1 / (spam_total + spam_vocab + ham_vocab))
             spam_prob = raw_spam_prob[word] * spam_prob
 
         try:
             ham_prob = raw_ham_prob[word] * ham_prob
         except KeyError:
-            raw_ham_prob[word] = (1 / (ham_total + ham_vocab + 1))
+            raw_ham_prob[word] = (1 / (ham_total + ham_vocab + spam_vocab))
             ham_prob = raw_ham_prob[word] * ham_prob
 
-    spam_prob *= spam_prior
-    ham_prob *= ham_prior
     if spam_prob > ham_prob:
         is_spam = True
     else:
@@ -197,6 +196,6 @@ def append_ham_and_spam(ham, spam):
 
 
 def get_spam_ham_features(ham_emails, spam_emails):
-    spam_features = [(Preprocessor.get_features(email, 'bow'), label) for (email, label) in spam_emails]
-    ham_features = [(Preprocessor.get_features(email, 'bow'), label) for (email, label) in ham_emails]
+    spam_features = [(Preprocessor.get_features(email, ' '), label) for (email, label) in spam_emails]
+    ham_features = [(Preprocessor.get_features(email, ' '), label) for (email, label) in ham_emails]
     return ham_features, spam_features

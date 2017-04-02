@@ -137,10 +137,10 @@ def classify(data_set, raw_spam_prob, raw_ham_prob, spam_total, ham_total, spam_
                              spam_prior, spam_prob, spam_total, spam_vocab)
 
         if (label == 'spam') and is_spam:
-            correct_count += 1;
+            correct_count += 1
 
         if (label == 'ham') and not (is_spam):
-            correct_count += 1;
+            correct_count += 1
         total_mail += 1
 
     print('correct count' + str(correct_count))
