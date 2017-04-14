@@ -1,0 +1,11 @@
+# Replacing raw probabilities of frequent words
+    # Using following function
+    # Papri (word|spam/ ham) =nf/(napr + vocabulary)
+    # nf number of occurrences of a frequent word in a coming email, napr=number of occurrences of all frequent word in a coming email.
+    # vocabulary = number of words in the spam/ham final frequent item set.
+    # for spam_frequent_word, count in spam_frequent.iteritems():
+    #    raw_spam_prob[spam_frequent_word] = count/(spam_total+spam_vocab)
+    # for ham_frequent_word, count in ham_frequent.iteritems():
+    #    raw_ham_prob[ham_frequent_word] = count/(ham_total+ham_vocab)
+    # evaluate its performance
+    

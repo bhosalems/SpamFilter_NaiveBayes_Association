@@ -6,11 +6,12 @@ from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 import spam_filter as sf
 
+#Driver program to run spamfilter.py
 def run_online(classifier, setting):
     while True:
-    features = sf.get_features(raw_input('Your new email: '), setting)
-    if (len(features) == 0):
-        break
+        features = sf.get_features(raw_input('Your new email: '), setting)
+        if (len(features) == 0):
+            break
     print (classifier.classify(features))
 
 def detect_spam(folder, classifier, setting):
