@@ -50,7 +50,6 @@ def get_frequent(all_features, spam_support_count, ham_support_count):
     # Taking words having count greater than support counts
     spam_frequent = {word: count for (word, count) in spam_word_count.items() if count > spam_support_count}
     ham_frequent = {word: count for (word, count) in ham_word_count.items() if count > ham_support_count}
-    print(spam_frequent, ham_frequent)
     return spam_frequent, ham_frequent
 
 

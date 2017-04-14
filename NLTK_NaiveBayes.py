@@ -55,19 +55,19 @@ def train(samples_proportion=0.7):
     spam_vocab = len(spam_word_count)
     ham_vocab = len(ham_word_count)
 
-    #t = get_probabilities_in_each_class(ham_prior, words_in_ham, ham_vocab, ham_word_count, raw_ham_prob, raw_spam_prob,
-    #                                    spam_prior, words_in_spam, spam_vocab, spam_word_count, test_set, train_set)
+    t = get_probabilities_in_each_class(ham_prior, words_in_ham, ham_vocab, ham_word_count, raw_ham_prob, raw_spam_prob,
+                                        spam_prior, words_in_spam, spam_vocab, spam_word_count, test_set, train_set)
 
-    #ham_prior, words_in_ham, ham_vocab, raw_ham_prob, raw_spam_prob, spam_prior, words_in_spam, spam_vocab, test_set, train_set = get_parameters(
-    #    t)
+    ham_prior, words_in_ham, ham_vocab, raw_ham_prob, raw_spam_prob, spam_prior, words_in_spam, spam_vocab, test_set, train_set = get_parameters(
+        t)
     #print("Train Size:" + str(len(train_set)) + str(' Test size:') + str(len(test_set)))
 
     #evaluate(train_set, test_set, raw_spam_prob, raw_ham_prob, words_in_spam, words_in_ham, spam_vocab, ham_vocab,
     #         spam_prior,
     #         ham_prior)
 
-    classifier = NaiveBayesClassifier
-    t = classifier.prob_classify(train_set).max()
+    classifier = NaiveBayesClassifier(list(spam_word_count),list(ham_word_count))
+    t = classifier.prob_classify(classifier, train_set).max()
 
 
 
