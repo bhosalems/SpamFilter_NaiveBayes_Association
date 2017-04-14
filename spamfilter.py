@@ -6,10 +6,8 @@ from collections import Counter
 from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk import NaiveBayesClassifier, classify
-
-#Contains implementation of only naive bayes form NLTK
 stoplist = stopwords.words('english')
-
+#NaiveBayes classifier is used for spam_filtering
 def init_lists(folder):
     a_list = []
     file_list = os.listdir(folder)
