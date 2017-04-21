@@ -1,4 +1,3 @@
-from NaiveBayes import train
 from ModifiedNaiveBayes import customized_train
 from NLTK_NaiveBayes import train as NLTK_train
 if __name__ == "__main__":
