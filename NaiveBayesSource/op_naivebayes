@@ -1,0 +1,25 @@
+/usr/bin/python2.7 /home/mahesh/django/NaioveBayesSource/Source_NaiveBayesyClassfier.py
+Train size
+8823
+Test size
+2206
+Enter spam support10
+Enter ham support10
+Accuracy on the training set = 0.989006007027
+Accuracy of the test set = 0.972801450589
+
+Process finished with exit code 0
+
+/usr/bin/python2.7 /home/mahesh/django/NaioveBayesSource/Source_NaiveBayesyClassfier.py
+Train size
+4685
+Test size
+1172
+Enter spam support10
+Enter ham support10
+Accuracy on the training set = 0.998078975454
+Accuracy of the test set = 0.990614334471
+
+Process finished with exit code 0
+
+

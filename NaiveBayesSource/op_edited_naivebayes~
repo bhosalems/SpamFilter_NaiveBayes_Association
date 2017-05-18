@@ -1,0 +1,13 @@
+Train size
+8823
+Test size
+2206
+Enter spam support10
+Enter ham support10
+Accuracy on the training set = 0.985719143149
+Accuracy of the test set = 0.966455122393
+
+Process finished with exit code 0
+
+
+
